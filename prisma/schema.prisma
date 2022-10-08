@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  username String @unique
+  email String @unique
+  password String
+  exercises Exercises[]
+  pieces Pieces[]
+
+  @@map("users")
+}
+
+model Composers {
+  id Int @id @default(autoincrement())
+  name String @unique
+  pieces Pieces[]
+
+  @@map("composers")
+}
+
+model Pieces {
+  id Int @id @default(autoincrement())
+  name String
+  file Bytes @db.ByteA
+  composerId Int
+  composer Composers @relation(fields: [composerId], references: [id])
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+
+  @@unique([name, userId])
+  @@map("pieces")
+}
+
+model Exercises {
+  id Int @id @default(autoincrement())
+  name String
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+
+  @@unique([name, userId])
+}
