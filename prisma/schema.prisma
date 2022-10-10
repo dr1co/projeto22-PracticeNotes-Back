@@ -32,7 +32,7 @@ model Composers {
 model Pieces {
   id Int @id @default(autoincrement())
   name String
-  file Bytes @db.ByteA
+  fileUrl String
   composerId Int
   composer Composers @relation(fields: [composerId], references: [id])
   userId Int
@@ -49,4 +49,5 @@ model Exercises {
   user Users @relation(fields: [userId], references: [id])
 
   @@unique([name, userId])
+  @@map("exercises")
 }
